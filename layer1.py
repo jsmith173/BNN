@@ -6,9 +6,11 @@ import numpy as np
 tfd = tfp.distributions
 tfpl = tfp.layers
 
-input_shape = (28, 28, 1)
 num_classes = 10
+input_shape = (28, 28, 1)
 output_shape = (num_classes, 1)
+input_batch_shape = (4, 28, 28)
+output_batch_shape = (4, num_classes)
 
 # Clear all previously registered custom objects
 keras.saving.get_custom_objects().clear()
@@ -54,8 +56,8 @@ def get_model():
 
 # Train the model.
 def train_model(model):
-    input = np.random.random(input_shape)
-    target = np.random.random(output_shape)
+    input = np.random.random(input_batch_shape)
+    target = np.random.random(output_batch_shape)
     model.summary()
     print(input.shape)
     print(target.shape)
@@ -63,8 +65,8 @@ def train_model(model):
     return model
 
 
-test_input = np.random.random(input_shape)
-test_target = np.random.random(output_shape)
+test_input = np.random.random(input_batch_shape)
+test_target = np.random.random(output_batch_shape)
 
 model = get_model()
 model = train_model(model)
