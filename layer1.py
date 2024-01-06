@@ -6,6 +6,10 @@ import numpy as np
 tfd = tfp.distributions
 tfpl = tfp.layers
 
+input_shape = (28, 28, 1)
+num_classes = 10
+output_shape = (num_classes, 1)
+
 # Clear all previously registered custom objects
 keras.saving.get_custom_objects().clear()
 
@@ -33,9 +37,16 @@ def custom_fn(x):
 
 # Create the model.
 def get_model():
-    inputs = keras.Input(shape=(4,))
-    mid = CustomLayer(0.5)(inputs)
-    outputs = keras.layers.Dense(1, activation=custom_fn)(mid)
+    inputs = keras.Input(shape=input_shape)
+    layer0 = CustomLayer(0.5)(inputs)
+	
+    layer1 = keras.layers.Conv2D(filters=8, kernel_size=(5, 5), activation='relu', padding='valid', input_shape=input_shape)(layer0)
+    layer2 = keras.layers.MaxPooling2D(pool_size=(6, 6))(layer1)
+    layer3 = keras.layers.Flatten()(layer2)
+    outputs = keras.layers.Dense(units=num_classes, activation='softmax')(layer3)
+	
+    print(inputs.shape)
+    print(outputs.shape)
     model = keras.Model(inputs, outputs)
     model.compile(optimizer="rmsprop", loss="mean_squared_error")
     return model
@@ -43,14 +54,17 @@ def get_model():
 
 # Train the model.
 def train_model(model):
-    input = np.random.random((4, 4))
-    target = np.random.random((4, 1))
+    input = np.random.random(input_shape)
+    target = np.random.random(output_shape)
+    model.summary()
+    print(input.shape)
+    print(target.shape)
     model.fit(input, target)
     return model
 
 
-test_input = np.random.random((4, 4))
-test_target = np.random.random((4, 1))
+test_input = np.random.random(input_shape)
+test_target = np.random.random(output_shape)
 
 model = get_model()
 model = train_model(model)
