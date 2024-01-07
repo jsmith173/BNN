@@ -32,9 +32,9 @@ class CustomLayer(keras.layers.Layer):
         return {"factor": self.factor}
 
 
-@keras.saving.register_keras_serializable(package="my_package", name="custom_fn")
-def custom_fn(x):
-    return x**2
+@keras.saving.register_keras_serializable(package="my_package", name="nll")
+def nll(y_true, y_pred):
+    return -y_pred.log_prob(y_true)  
 
 
 # Create the model.
@@ -45,12 +45,13 @@ def get_model():
     layer1 = keras.layers.Conv2D(filters=8, kernel_size=(5, 5), activation='relu', padding='valid', input_shape=input_shape)(layer0)
     layer2 = keras.layers.MaxPooling2D(pool_size=(6, 6))(layer1)
     layer3 = keras.layers.Flatten()(layer2)
-    outputs = keras.layers.Dense(units=num_classes, activation='softmax')(layer3)
+    layer4 = keras.layers.Dense(tfpl.OneHotCategorical.params_size(10))(layer3)
+    outputs = tfpl.OneHotCategorical(10, convert_to_tensor_fn=tfd.Distribution.mode)(layer4)
 	
     print(inputs.shape)
     print(outputs.shape)
     model = keras.Model(inputs, outputs)
-    model.compile(optimizer="rmsprop", loss="mean_squared_error")
+    model.compile(optimizer="rmsprop", loss=nll, metrics=["accuracy"])
     return model
 
 
@@ -73,7 +74,10 @@ model = train_model(model)
 model.save("custom_model.keras")
 
 # Now, we can simply load without worrying about our custom objects.
-reconstructed_model = keras.models.load_model("custom_model.keras")
+reconstructed_model = keras.models.load_model(
+ "custom_model.keras",
+ custom_objects={"CustomLayer": CustomLayer, "nll": nll},
+)
 
 # Let's check:
 np.testing.assert_allclose(
