@@ -1,0 +1,322 @@
+{
+    "class_name": "Functional",
+    "config": {
+        "name": "model",
+        "trainable": true,
+        "layers": [
+            {
+                "module": "keras.layers",
+                "class_name": "InputLayer",
+                "config": {
+                    "batch_input_shape": [
+                        null,
+                        28,
+                        28,
+                        1
+                    ],
+                    "dtype": "float32",
+                    "sparse": false,
+                    "ragged": false,
+                    "name": "input_1"
+                },
+                "registered_name": null,
+                "name": "input_1",
+                "inbound_nodes": []
+            },
+            {
+                "module": null,
+                "class_name": "CustomLayer",
+                "config": {
+                    "factor": 0.5
+                },
+                "registered_name": "MyLayers>CustomLayer",
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        28,
+                        28,
+                        1
+                    ]
+                },
+                "name": "custom_layer",
+                "inbound_nodes": [
+                    [
+                        [
+                            "input_1",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "module": "keras.layers",
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "batch_input_shape": [
+                        null,
+                        28,
+                        28,
+                        1
+                    ],
+                    "filters": 8,
+                    "kernel_size": [
+                        5,
+                        5
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "valid",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "module": "keras.initializers",
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        },
+                        "registered_name": null
+                    },
+                    "bias_initializer": {
+                        "module": "keras.initializers",
+                        "class_name": "Zeros",
+                        "config": {},
+                        "registered_name": null
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "registered_name": null,
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        28,
+                        28,
+                        1
+                    ]
+                },
+                "name": "conv2d",
+                "inbound_nodes": [
+                    [
+                        [
+                            "custom_layer",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "module": "keras.layers",
+                "class_name": "MaxPooling2D",
+                "config": {
+                    "name": "max_pooling2d",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "pool_size": [
+                        6,
+                        6
+                    ],
+                    "padding": "valid",
+                    "strides": [
+                        6,
+                        6
+                    ],
+                    "data_format": "channels_last"
+                },
+                "registered_name": null,
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        24,
+                        24,
+                        8
+                    ]
+                },
+                "name": "max_pooling2d",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "module": "keras.layers",
+                "class_name": "Flatten",
+                "config": {
+                    "name": "flatten",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "data_format": "channels_last"
+                },
+                "registered_name": null,
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        4,
+                        4,
+                        8
+                    ]
+                },
+                "name": "flatten",
+                "inbound_nodes": [
+                    [
+                        [
+                            "max_pooling2d",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "module": "keras.layers",
+                "class_name": "Dense",
+                "config": {
+                    "name": "dense",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "units": 10,
+                    "activation": "linear",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "module": "keras.initializers",
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        },
+                        "registered_name": null
+                    },
+                    "bias_initializer": {
+                        "module": "keras.initializers",
+                        "class_name": "Zeros",
+                        "config": {},
+                        "registered_name": null
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "registered_name": null,
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        128
+                    ]
+                },
+                "name": "dense",
+                "inbound_nodes": [
+                    [
+                        [
+                            "flatten",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "module": "tensorflow_probability.python.layers.distribution_layer",
+                "class_name": "OneHotCategorical",
+                "config": {
+                    "name": "one_hot_categorical",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "function": [
+                        "4wAAAAAAAAAAAAAAAAcAAAAEAAAAHwAAAHOuAAAAiAF8AGkAfAGkAY4BfQJ0AHwCagF0AmoDagSD\nAn0DfANyF4cAZgFkAWQChAhuAYgAfQR0BWoGfAJ8BGQDjQJ9BXwFoAehAH0GfAV8Bl8IfANyS3wG\nZAQZAGoJfAZfCXwGZAQZAGoKfAZfCnwGZAQZAGoBfAZfAXwGZAQZAGoJfAVfC3wGZAQZAGoKfAVf\nCnwFfAZmAlMAfAZqCXwFXwt8BmoKfAVfCnwFfAZmAlMAKQX6RFdyYXBzIGBtYWtlX2Rpc3RyaWJ1\ndGlvbl9mbmAgdG8gcmV0dXJuIGJvdGggZGlzdCBhbmQgY29uY3JldGUgdmFsdWUuYwEAAAAAAAAA\nAAAAAAEAAAAEAAAAEwAAAHMOAAAAdACgAYgAfACDAaEBUwCpAU4pAtoMdGVuc29yX3R1cGxl2gtU\nZW5zb3JUdXBsZSkB2gFkqQHaFGNvbnZlcnRfdG9fdGVuc29yX2ZuqQD6hkM6L1VzZXJzL0F0dGls\nYS9BcHBEYXRhL0xvY2FsL1Byb2dyYW1zL1B5dGhvbi9QeXRob24zMTBfYS9saWIvc2l0ZS1wYWNr\nYWdlcy90ZW5zb3JmbG93X3Byb2JhYmlsaXR5L3B5dGhvbi9sYXllcnMvZGlzdHJpYnV0aW9uX2xh\neWVyLnB52gg8bGFtYmRhPqkAAADzAgAAAA4AejpEaXN0cmlidXRpb25MYW1iZGEuX19pbml0X18u\nPGxvY2Fscz4uX2ZuLjxsb2NhbHM+LjxsYW1iZGE+KQLaDGRpc3RyaWJ1dGlvbnIHAAAA6f////8p\nDNoKaXNpbnN0YW5jZdoFZHR5cGXaC2NvbGxlY3Rpb25z2gNhYmPaCFNlcXVlbmNl2gNkdGPaEF9U\nZW5zb3JDb2VyY2libGXaBl92YWx1ZdoRX3RmcF9kaXN0cmlidXRpb27aBXNoYXBl2glnZXRfc2hh\ncGXaBl9zaGFwZSkHWgVmYXJnc1oHZmt3YXJnc3IFAAAAWgx2YWx1ZV9pc19zZXFaJG1heWJlX2Nv\nbXBvc2l0ZV9jb252ZXJ0X3RvX3RlbnNvcl9mbnIMAAAA2gV2YWx1ZakCcgcAAADaFG1ha2VfZGlz\ndHJpYnV0aW9uX2ZucggAAAByCQAAANoDX2ZupAAAAHMsAAAADgIQAQIDDv8CAQL+BAMCAQIBBv4I\nCQYEBAQMAQwBDAEMAQwBCAQI/ggBCAE=\n",
+                        null,
+                        [
+                            {
+                                "module": "builtins",
+                                "class_name": "function",
+                                "config": "mode",
+                                "registered_name": "function"
+                            },
+                            {
+                                "class_name": "__lambda__",
+                                "config": {
+                                    "value": [
+                                        "4wEAAAAAAAAAAAAAAAEAAAAGAAAAEwAAAPMQAAAAdACgAXwAiACIAYgCoQRTAKkBTikC2hFPbmVI\nb3RDYXRlZ29yaWNhbNoDbmV3qQHaAXSpA9oKZXZlbnRfc2l6ZdoMc2FtcGxlX2R0eXBl2g12YWxp\nZGF0ZV9hcmdzqQD6hkM6L1VzZXJzL0F0dGlsYS9BcHBEYXRhL0xvY2FsL1Byb2dyYW1zL1B5dGhv\nbi9QeXRob24zMTBfYS9saWIvc2l0ZS1wYWNrYWdlcy90ZW5zb3JmbG93X3Byb2JhYmlsaXR5L3B5\ndGhvbi9sYXllcnMvZGlzdHJpYnV0aW9uX2xheWVyLnB52gg8bGFtYmRhPtEBAADzBgAAAAQACAEE\n/w==\n",
+                                        null,
+                                        [
+                                            10,
+                                            null,
+                                            false
+                                        ]
+                                    ]
+                                }
+                            }
+                        ]
+                    ],
+                    "function_type": "lambda",
+                    "module": "tensorflow_probability.python.layers.distribution_layer",
+                    "output_shape": null,
+                    "output_shape_type": "raw",
+                    "output_shape_module": null,
+                    "arguments": {},
+                    "make_distribution_fn": "gAWVQwMAAAAAAACMF2Nsb3VkcGlja2xlLmNsb3VkcGlja2xllIwOX21ha2VfZnVuY3Rpb26Uk5Qo\naACMDV9idWlsdGluX3R5cGWUk5SMCENvZGVUeXBllIWUUpQoSwFLAEsASwFLBksTQxB0AKABfACI\nAIgBiAKhBFMAlE6FlIwRT25lSG90Q2F0ZWdvcmljYWyUjANuZXeUhpSMAXSUhZSMhkM6XFVzZXJz\nXEF0dGlsYVxBcHBEYXRhXExvY2FsXFByb2dyYW1zXFB5dGhvblxQeXRob24zMTBfYVxsaWJcc2l0\nZS1wYWNrYWdlc1x0ZW5zb3JmbG93X3Byb2JhYmlsaXR5XHB5dGhvblxsYXllcnNcZGlzdHJpYnV0\naW9uX2xheWVyLnB5lIwIPGxhbWJkYT6UTdEBQwYEAAgBBP+UjApldmVudF9zaXpllIwMc2FtcGxl\nX2R0eXBllIwNdmFsaWRhdGVfYXJnc5SHlCl0lFKUfZQojAtfX3BhY2thZ2VfX5SMJHRlbnNvcmZs\nb3dfcHJvYmFiaWxpdHkucHl0aG9uLmxheWVyc5SMCF9fbmFtZV9flIw3dGVuc29yZmxvd19wcm9i\nYWJpbGl0eS5weXRob24ubGF5ZXJzLmRpc3RyaWJ1dGlvbl9sYXllcpSMCF9fZmlsZV9flGgPdU5O\naACMEF9tYWtlX2VtcHR5X2NlbGyUk5QpUpRoHylSlGgfKVKUh5R0lFKUaACMEl9mdW5jdGlvbl9z\nZXRzdGF0ZZSTlGglfZR9lChoG2gQjAxfX3F1YWxuYW1lX1+UjCxPbmVIb3RDYXRlZ29yaWNhbC5f\nX2luaXRfXy48bG9jYWxzPi48bGFtYmRhPpSMD19fYW5ub3RhdGlvbnNfX5R9lIwOX19rd2RlZmF1\nbHRzX1+UTowMX19kZWZhdWx0c19flE6MCl9fbW9kdWxlX1+UaByMB19fZG9jX1+UTowLX19jbG9z\ndXJlX1+UaACMCl9tYWtlX2NlbGyUk5RLCoWUUpRoNE6FlFKUaDSJhZRSlIeUjBdfY2xvdWRwaWNr\nbGVfc3VibW9kdWxlc5RdlIwLX19nbG9iYWxzX1+UfZRoCmgcaAqTlHN1hpSGUjAu\n",
+                    "convert_to_tensor_fn": "mode"
+                },
+                "registered_name": "OneHotCategorical",
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        10
+                    ]
+                },
+                "name": "one_hot_categorical",
+                "inbound_nodes": [
+                    [
+                        [
+                            "dense",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            }
+        ],
+        "input_layers": [
+            [
+                "input_1",
+                0,
+                0
+            ]
+        ],
+        "output_layers": [
+            [
+                "one_hot_categorical",
+                0,
+                0
+            ]
+        ]
+    },
+    "keras_version": "2.15.0",
+    "backend": "tensorflow"
+}
