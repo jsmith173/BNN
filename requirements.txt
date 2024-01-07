@@ -1,0 +1,4 @@
+tensorflow==2.15
+tensorflow-probability
+tensorflow-datasets==4.9.2
+imagecorruptions
