@@ -1,0 +1,20 @@
+# 
+if gen_prob_model == 1:
+    tf.random.set_seed(0)
+    probabilistic_model = get_probabilistic_model(
+        input_shape=input_shape,
+        loss=nll,
+        optimizer="adam",
+        metrics=["accuracy"]
+    )
+    probabilistic_model.summary()    
+    probabilistic_model.fit(x_train, y_train, batch_size=128, epochs=5, validation_split=0.1)
+    probabilistic_model.save('prob_mnist.keras')  
+elif eval_prob_model == 1:
+    probabilistic_model = tf.keras.models.load_model('prob_mnist.keras')
+    
+if eval_prob_model == 1:
+    print('Accuracy on MNIST test set (prob): ',
+          str(probabilistic_model.evaluate(x_test, y_test, verbose=False)[1]))
+    print('Accuracy on corrupted MNIST test set (prob): ',
+          str(probabilistic_model.evaluate(x_c_test, y_c_test, verbose=False)[1]))

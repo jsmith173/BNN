@@ -1,0 +1,9 @@
+Deterministic,Keras
+-------------------
+Accuracy on MNIST test set:  0.9692999720573425
+Accuracy on corrupted MNIST test set:  0.9639000296592712
+
+Deterministic,tflite
+-------------------
+Model accuracy is 96.4900% (Number of test samples=60000)
+

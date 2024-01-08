@@ -1,4 +1,7 @@
-tensorflow==2.15
+tensorflow
 tensorflow-probability
 tensorflow-datasets==4.9.2
 imagecorruptions
+matplotlib
+scikit-learn
+imgaug

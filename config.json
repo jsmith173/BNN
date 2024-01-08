@@ -1,0 +1,11 @@
+{
+	"fig_N": 3, 
+	"imgW": 28, 
+	"conversion_ctl": 0, 
+	"draw_original": 0, 
+	"draw_aug": 0, 
+	"gen_deterministic_model": 0, 
+	"eval_deterministic_model": 2, 
+	"gen_prob_model": 0, 
+	"eval_prob_model": 0
+}

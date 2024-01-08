@@ -1,0 +1,18 @@
+#
+if draw_original == 1:
+    print("Original");
+    for i in range(fig_N*fig_N):
+     plt.subplot(fig_N,fig_N,i+1)
+     plt.imshow(x_train[i], cmap='gray', interpolation='none')
+     plt.title("Class {}".format(y_train[i]))
+    print("");
+
+# 
+if draw_aug == 1:
+    print("Augmented");
+    for i in range(fig_N*fig_N):
+     plt.subplot(fig_N,fig_N,i+1)
+     plt.imshow(x_c_train[i], cmap='gray', interpolation='none')
+     plt.title("Class {}".format(y_train[i]))
+    print("");
+

@@ -1,0 +1,33 @@
+# Build and compile the Bayesian CNN model
+tf.random.set_seed(0)
+divergence_fn = lambda q, p, _ : tfd.kl_divergence(q, p) / x_train.shape[0]
+convolutional_reparameterization_layer = get_convolutional_reparameterization_layer(
+    input_shape=input_shape, divergence_fn=divergence_fn
+)
+dense_variational_layer = get_dense_variational_layer(
+    get_prior, get_posterior, kl_weight=1/x_train.shape[0]
+)
+
+bayesian_model = keras.Sequential([
+    convolutional_reparameterization_layer,
+    layers.MaxPooling2D(pool_size=(6, 6)),
+    layers.Flatten(),
+    dense_variational_layer,
+    tfpl.OneHotCategorical(10, convert_to_tensor_fn=tfd.Distribution.mode)
+])
+bayesian_model.compile(loss=nll,
+              optimizer=RMSprop(),
+              metrics=['accuracy'],
+              experimental_run_tf_function=False)
+			  
+			  
+#
+bayesian_model.summary()
+bayesian_model.fit(x_train, y_train, batch_size=128, epochs=50, validation_split=0.1)
+bayesian_model.save('bayesian_mnist.keras')  
+
+# Evaluate the model
+print('Accuracy on MNIST test set: ',
+      str(bayesian_model.evaluate(x_test, y_test, verbose=False)[1]))
+print('Accuracy on corrupted MNIST test set: ',
+      str(bayesian_model.evaluate(x_c_test, y_c_test, verbose=False)[1]))
