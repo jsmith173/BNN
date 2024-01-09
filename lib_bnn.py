@@ -17,8 +17,11 @@ tfpl = tfp.layers
 
 USE_KERAS_MODEL = 1
 USE_TFLITE_MODEL = 2
+USE_TFLITE_MODEL_OTHER_CATEGORY = 3
 
 deterministic_tflite_model = 'deterministic_mnist.tflite'
+probabilistic_tflite_model = 'probabilistic_mnist.tflite'
+bayesian_tflite_model = 'bayesian_mnist.tflite'
 
 #
 def corrupt_image(src):

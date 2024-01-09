@@ -1,20 +1,25 @@
 # 
-if gen_prob_model == 1:
-    tf.random.set_seed(0)
-    probabilistic_model = get_probabilistic_model(
-        input_shape=input_shape,
-        loss=nll,
-        optimizer="adam",
-        metrics=["accuracy"]
-    )
-    probabilistic_model.summary()    
-    probabilistic_model.fit(x_train, y_train, batch_size=128, epochs=5, validation_split=0.1)
-    probabilistic_model.save('prob_mnist.keras')  
-elif eval_prob_model == 1:
-    probabilistic_model = tf.keras.models.load_model('prob_mnist.keras')
+if config['gen_prob_model'] == 1:
+ tf.random.set_seed(0)
+ probabilistic_model = get_probabilistic_model(
+	input_shape=input_shape,
+	loss=nll,
+	optimizer="adam",
+	metrics=["accuracy"]
+ )
+ probabilistic_model.summary()    
+ probabilistic_model.fit(x_train, y_train, batch_size=128, epochs=5, validation_split=0.1)
+
+ converter = tf.lite.TFLiteConverter.from_keras_model(probabilistic_model)
+ tflite_model = converter.convert()
+ with open(nn.probabilistic_tflite_model, 'wb') as f:
+  f.write(tflite_model)
+  
+if config['eval_prob_model'] == nn.USE_TFLITE_MODEL:
+ r.evaluate_model(nn.probabilistic_tflite_model, x_train, y_train_old)
     
-if eval_prob_model == 1:
-    print('Accuracy on MNIST test set (prob): ',
-          str(probabilistic_model.evaluate(x_test, y_test, verbose=False)[1]))
-    print('Accuracy on corrupted MNIST test set (prob): ',
-          str(probabilistic_model.evaluate(x_c_test, y_c_test, verbose=False)[1]))
+elif config['gen_prob_model'] == 1 and config['eval_prob_model'] == nn.USE_KERAS_MODEL:
+ print('Accuracy on MNIST test set (prob): ',
+       str(probabilistic.evaluate(x_test, y_test, verbose=False)[1]))
+ print('Accuracy on corrupted MNIST test set  (prob): ',
+       str(probabilistic.evaluate(x_c_test, y_c_test, verbose=False)[1]))

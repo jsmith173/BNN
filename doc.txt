@@ -1,9 +1,27 @@
 Deterministic,Keras
 -------------------
 Accuracy on MNIST test set:  0.9692999720573425
-Accuracy on corrupted MNIST test set:  0.9639000296592712
+Accuracy on corrupted MNIST test set: 0.9639000296592712
 
 Deterministic,tflite
--------------------
+--------------------
 Model accuracy is 96.4900% (Number of test samples=60000)
+
+Probability,Keras
+-----------------
+Accuracy on MNIST test set (prob):  0.9689000248908997
+Accuracy on corrupted MNIST test set (prob): 0.9660000205039978
+
+Probability,tflite
+------------------
+Model accuracy is 96.6350% (Number of test samples=60000)
+
+Bayesian,Keras
+--------------
+Accuracy on MNIST test set (bayesian):  0.9739000201225281
+Accuracy on corrupted MNIST test set (bayesian):  0.9613999724388123
+
+Bayesian,tflite
+---------------
+Model accuracy is 97.0883% (Number of test samples=60000)
 

@@ -1,33 +1,42 @@
 # Build and compile the Bayesian CNN model
-tf.random.set_seed(0)
-divergence_fn = lambda q, p, _ : tfd.kl_divergence(q, p) / x_train.shape[0]
-convolutional_reparameterization_layer = get_convolutional_reparameterization_layer(
-    input_shape=input_shape, divergence_fn=divergence_fn
-)
-dense_variational_layer = get_dense_variational_layer(
-    get_prior, get_posterior, kl_weight=1/x_train.shape[0]
-)
+if config['gen_bay_model'] == 1:
+ tf.random.set_seed(0)
+ divergence_fn = lambda q, p, _ : tfd.kl_divergence(q, p) / x_train.shape[0]
+ convolutional_reparameterization_layer = nn.get_convolutional_reparameterization_layer(
+     input_shape=input_shape, divergence_fn=divergence_fn
+ )
+ dense_variational_layer = nn.get_dense_variational_layer(
+     nn.get_prior, nn.get_posterior, kl_weight=1/x_train.shape[0]
+ )
 
-bayesian_model = keras.Sequential([
-    convolutional_reparameterization_layer,
-    layers.MaxPooling2D(pool_size=(6, 6)),
-    layers.Flatten(),
-    dense_variational_layer,
-    tfpl.OneHotCategorical(10, convert_to_tensor_fn=tfd.Distribution.mode)
-])
-bayesian_model.compile(loss=nll,
-              optimizer=RMSprop(),
-              metrics=['accuracy'],
-              experimental_run_tf_function=False)
+ bayesian_model = keras.Sequential([
+     convolutional_reparameterization_layer,
+     layers.MaxPooling2D(pool_size=(6, 6)),
+     layers.Flatten(),
+     dense_variational_layer,
+     tfpl.OneHotCategorical(10, convert_to_tensor_fn=tfd.Distribution.mode)
+ ])
+ bayesian_model.compile(loss=nn.nll,
+               optimizer=RMSprop(),
+               metrics=['accuracy'],
+               experimental_run_tf_function=False)
 			  
 			  
-#
-bayesian_model.summary()
-bayesian_model.fit(x_train, y_train, batch_size=128, epochs=50, validation_split=0.1)
-bayesian_model.save('bayesian_mnist.keras')  
+ #
+ bayesian_model.summary()
+ bayesian_model.fit(x_train, y_train, batch_size=128, epochs=50, validation_split=0.1)
+ 
+ converter = tf.lite.TFLiteConverter.from_keras_model(bayesian_model)
+ tflite_model = converter.convert()
+ with open(nn.bayesian_tflite_model, 'wb') as f:
+  f.write(tflite_model)
+ 
+if config['eval_bay_model'] == nn.USE_TFLITE_MODEL:
+ r.evaluate_model(nn.bayesian_tflite_model, x_train, y_train_old)
 
-# Evaluate the model
-print('Accuracy on MNIST test set: ',
-      str(bayesian_model.evaluate(x_test, y_test, verbose=False)[1]))
-print('Accuracy on corrupted MNIST test set: ',
-      str(bayesian_model.evaluate(x_c_test, y_c_test, verbose=False)[1]))
+elif config['gen_bay_model'] == 1 and config['eval_bay_model'] == nn.USE_KERAS_MODEL:
+ print('Accuracy on MNIST test set (bayesian): ',
+       str(bayesian_model.evaluate(x_test, y_test, verbose=False)[1]))
+ print('Accuracy on corrupted MNIST test set (bayesian): ',
+       str(bayesian_model.evaluate(x_c_test, y_c_test, verbose=False)[1]))
+
